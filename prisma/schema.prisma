@@ -1,32 +1,28 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-// Modelo Principal: El Tenant (El Club)
 model Club {
-  id          String   @id @default(uuid())
-  name        String   // Ejemplo: "Scrambler 507"
-  slug        String   @unique // URL amigable: "scrambler_507"
-  createdAt   DateTime @default(now())
-  
-  // Relación: Un club tiene muchos pilotos
-  riders      Rider[]
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  riders    Rider[]
 }
 
-// Modelo Secundario: El Piloto (Miembro)
 model Rider {
-  id          String   @id @default(uuid())
-  name        String
-  email       String   @unique
-  bloodType   String?  // Dato médico para el sistema S.O.S.
-  
-  // Conexión Multi-Tenant (Cada piloto pertenece a un club)
-  clubId      String
-  club        Club     @relation(fields: [clubId], references: [id])
-
-  createdAt   DateTime @default(now())
+  id         String   @id @default(uuid())
+  firstName  String
+  lastName   String
+  nickname   String?
+  email      String   @unique
+  bloodGroup String?
+  clubId     String
+  club       Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
 }
